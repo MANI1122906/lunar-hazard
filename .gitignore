@@ -1,0 +1,94 @@
+# ============================================================================
+# LUNAR HAZARD DETECTIVE - COMPREHENSIVE .gitignore
+# ============================================================================
+
+# ---- DATA FILES (Large Datasets) ----
+data/raw/**/*.tif
+data/raw/**/*.hdf5
+data/raw/**/*.tiff
+data/raw/**/*.img
+data/raw/**/*.dem
+data/processed/**
+data/masks/**
+
+# ---- MODEL WEIGHTS (Critical: Block AI Brains) ----
+models/**/*.pt
+models/**/*.pth
+models/**/*.onnx
+models/**/*.h5
+models/**/*.keras
+*.pkl
+*.pickle
+
+# ---- LARGE MEDIA FILES ----
+assets/**/*.mp4
+assets/**/*.avi
+assets/**/*.mov
+assets/**/*.mkv
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# ---- PYTHON ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pyc
+.pyo
+*.egg
+*.egg-info/
+dist/
+build/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ---- VIRTUAL ENVIRONMENTS ----
+venv/
+env/
+ENV/
+.venv
+.env
+*.env
+
+# ---- IDE & EDITOR ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# ---- JUPYTER NOTEBOOKS ----
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ---- LOGS & TEMPORARY ----
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+
+# ---- OS SPECIFIC ----
+.DS_Store
+.AppleDouble
+.LSOverride
+Desktop.ini
+
+# ---- TEST ARTIFACTS ----
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ---- KEEP THESE (Tracking necessary files) ----
+!assets/sample_lunar.tif
+!assets/background_audio.mp3
+!assets/architecture.png
+!models/.gitkeep
+

@@ -1,0 +1,13 @@
+# Architecture Diagram Placeholder
+# 
+# This file should contain a visual diagram of the system architecture.
+# 
+# To create this file:
+# 1. Generate an architecture diagram showing:
+#    - Data preprocessing pipeline
+#    - YOLO detection branch
+#    - U-Net segmentation branch
+#    - Output visualization
+# 2. Save as PNG format
+# 
+# Tools: Lucidchart, Draw.io, Graphviz, or similar
