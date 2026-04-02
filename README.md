@@ -1,86 +1,146 @@
-🌕 Lunar-Hazard-Detective
-AI-Powered Autonomous Hazard Detection for Lunar Landing Sites
+# 🌕 Lunar Hazard Detective
+**AI-Powered Autonomous Hazard Detection for Lunar Landing Sites**  
 Targeting safe landing zones using Chandrayaan Satellite Imagery
 
-📊 Project Overview
-Navigating the lunar south pole requires extreme precision. Lunar-Hazard-Detective is an end-to-end vision pipeline that processes high-resolution satellite data to identify landing risks. It specifically targets Boulders (Object Detection), Landslides (Semantic Segmentation), and Steep Slopes (DTM Analysis) to ensure mission success.
+📁 **GitHub:** [MANI1122906/lunar-hazard](https://github.com/MANI1122906/lunar-hazard)
 
-🛠 Technical Implementation (Core Components)
-1. Boulder Detection (YOLOv11)
-Model: YOLOv11 (Small/Medium variants for speed-accuracy balance).
+---
 
-Function: Real-time identification of discrete obstacles.
+## 📊 Project Overview
+Navigating the lunar south pole requires extreme precision. Lunar-Hazard-Detective is an end-to-end vision pipeline that processes high-resolution satellite data to identify landing risks:
 
-Precision: Optimized for low-light lunar conditions using shadow-enhancement preprocessing.
+- 🪨 **Boulders** — Object Detection (YOLOv11)
+- 🌊 **Landslides** — Semantic Segmentation (U-Net)
+- ⛰️ **Steep Slopes** — DTM Analysis
 
-2. Landslide Segmentation (U-Net)
-Model: U-Net Architecture with ResNet-34 Backbone.
+---
 
-Function: Pixel-level classification of unstable terrain and regolith displacement.
+## 🛠 Technical Implementation
 
-Output: Binary masks indicating "Safe" vs "Unsafe" zones.
+### 1. Boulder Detection (YOLOv11)
+- **Model:** YOLOv11 (Small/Medium variants for speed-accuracy balance)
+- **Function:** Real-time identification of discrete obstacles
+- **Precision:** Optimized for low-light lunar conditions using CLAHE preprocessing
 
-3. Slope Analysis Engine
-Input: Digital Terrain Models (DTM).
+### 2. Landslide Segmentation (U-Net)
+- **Model:** U-Net Architecture with ResNet-34 Backbone
+- **Function:** Pixel-level classification of unstable terrain and regolith displacement
+- **Output:** Binary masks indicating Safe vs Unsafe zones
 
-Logic: Calculates surface gradients using moving-window algorithms.
+### 3. Slope Analysis Engine
+- **Input:** Digital Terrain Models (DTM)
+- **Logic:** Calculates surface gradients using moving-window algorithms
+- **Constraint:** Flags any region with inclination > 15° as high-hazard
 
-Constraint: Automatically flags any region with an inclination > 15° as a high-hazard zone.
+---
 
-📂 Repository Structure
-Plaintext
+## 📂 Repository Structure
+```
 Lunar-Hazard-Detective/
-├── assets/                  # System architecture & demo visuals
-├── data/                    
+├── assets/                  # Architecture & demo visuals
+├── data/
 │   ├── raw/                 # .tif / .hdf5 Chandrayaan imagery
-│   ├── processed/           # CLAHE & Shadow-corrected images
+│   ├── processed/           # CLAHE & shadow-corrected images
 │   └── masks/               # Ground truth segmentation labels
-├── models/                  
-│   ├── boulder_yolo.pt      # Weights for YOLOv11
-│   └── landslide_unet.pth   # Weights for U-Net
-├── src/                     
-│   ├── preprocessing.py     # Image enhancement & CLAHE logic
-│   ├── slope_engine.py      # DTM to Slope conversion math
-│   ├── detection.py         # Inference logic (YOLO & U-Net)
-│   └── utils.py             # Coordinate & Geospatial helpers
-├── app.py                   # Streamlit Dashboard (GUI)
+├── models/
+│   ├── boulder_yolo.pt      # YOLOv11 weights (placeholder)
+│   └── landslide_unet.pth   # U-Net weights (placeholder)
+├── src/
+│   ├── preprocessing.py     # CLAHE & image enhancement
+│   ├── slope_engine.py      # DTM slope conversion
+│   ├── detection.py         # YOLO & U-Net inference
+│   └── utils.py             # Geospatial helpers
+├── app.py                   # Streamlit Dashboard
 └── requirements.txt         # Dependencies
-🚀 Getting Started
-Installation
-Clone & Navigate:
+```
 
-Bash
-git clone https://github.com/your-username/Lunar-Hazard-Detective.git
-cd Lunar-Hazard-Detective
-Setup Environment:
+---
 
-Bash
+## ⚠️ Note on Model Weights
+The model files (`boulder_yolo.pt` and `landslide_unet.pth`) in this repo are **placeholders** — real trained weights are not included due to file size limits.
+
+**But don't worry — the app runs perfectly without them! ✅**
+
+The system runs in **MOCK mode** by default which:
+- Simulates boulder detection with realistic confidence scores
+- Generates landslide risk maps and hazard analysis
+- Produces full GO / NO-GO verdicts
+- Shows the complete dashboard with all features working
+
+No model files needed to run or demo this project.
+
+---
+
+## 🚀 Getting Started
+
+### Installation
+```bash
+# Clone the repo
+git clone https://github.com/MANI1122906/lunar-hazard.git
+cd lunar-hazard
+
+# Setup environment
 python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-.\.venv\Scripts\Activate   # Windows
-Install Requirements:
+.\.venv\Scripts\Activate     # Windows
+source .venv/bin/activate    # Linux/Mac
 
-Bash
+# Install dependencies
 pip install -r requirements.txt
-Running the App
-Bash
+```
+
+### Run the App
+```bash
 streamlit run app.py
-💡 Key Features for Evaluation
-Advanced Preprocessing: Uses CLAHE (Contrast Limited Adaptive Histogram Equalization) to reveal details in deep lunar shadows.
+```
 
-Multi-Modal Analysis: Combines standard imagery with DTM (Digital Terrain Model) data for 3D terrain understanding.
+---
 
-Interactive Dashboard: Users can upload .tif files and get instant hazard maps with confidence scores.
+## 🌐 Accessing the App
 
-Mission Ready: Logic is built to handle the large-scale file formats used by ISRO/NASA.
+| URL | When it works |
+|-----|---------------|
+| `http://localhost:8501` | ✅ Works **only while** `streamlit run app.py` is running in terminal |
+| `http://192.168.1.102:8501` | ✅ Works on same WiFi network while terminal is running |
 
-⚠️ Important Note for Developers
-When handling masks for segmentation, ensure they are cast to uint8 before using OpenCV functions to avoid data type mismatches:
+> ⚠️ **Important:** The URL will **NOT open** if the terminal is stopped or closed.  
+> Always keep the terminal running while using the app.
 
-Python
-# Vital for cv2.findContours compatibility
+### Simple Rule
+```
+Terminal running ✅  →  http://localhost:8501 works
+Terminal stopped ❌  →  URL won't open
+```
+
+> ⏳ **Note:** First load takes 10-15 seconds — this is normal for Streamlit startup.
+
+---
+
+## 💡 Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **CLAHE Preprocessing** | Reveals details hidden in deep lunar shadows |
+| **Multi-Modal Analysis** | Combines imagery + DTM for 3D terrain understanding |
+| **Interactive Dashboard** | Upload `.tif` files, get instant hazard maps |
+| **GO / NO-GO Verdict** | Clear binary safety decision with confidence score |
+| **MOCK Mode** | Fully functional without real model weights |
+| **Mission Ready** | Handles large-scale ISRO/NASA file formats |
+
+---
+
+## ⚠️ Developer Note
+When handling segmentation masks, cast to `uint8` before using OpenCV:
+```python
+# Required for cv2.findContours compatibility
 processed_mask = (prediction_mask > 0.5).astype(np.uint8) * 255
-👥 Team
-Mani Kumar – Lead Developer
-📄 License
-This project is licensed under the MIT License.
+```
+
+---
+
+## 👥 Team
+**Mani Mani Kumar** — Team Leader & Lead Developer
+
+---
+
+## 📄 License
+This project is licensed under the **MIT License**.
