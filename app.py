@@ -489,120 +489,43 @@ if operating_mode == "Upload Image":
         # Results Display
         if st.session_state.detection_results:
             st.markdown("---")
-            st.markdown("<h3>📋 DETECTION RESULTS</h3>", unsafe_allow_html=True)
             
-            # Side-by-side Images
-            result_col1, result_col2 = st.columns(2)
-            
-            with result_col1:
-                st.markdown("<div class='neon-border'><h4 style='margin: 0;'>Original Image</h4></div>", 
-                           unsafe_allow_html=True)
-                st.image(image_array, use_column_width=True, channels="GRAY")
-            
-            with result_col2:
-                st.markdown("<div class='neon-border'><h4 style='margin: 0;'>Detected Hazards</h4></div>", 
-                           unsafe_allow_html=True)
-                
-                # Create overlay
-                detected_image = overlay_detections(
-                    image_array,
-                    st.session_state.detection_results['boulders'],
-                    st.session_state.detection_results['landslides'],
-                    st.session_state.detection_results.get('confirmed_landslides')
-                )
-                st.image(detected_image, use_column_width=True, channels="BGR")
-            
-            # Hazard Analysis Report
-            st.markdown("<h3>📊 HAZARD ANALYSIS REPORT</h3>", unsafe_allow_html=True)
+            # Create overlay
+            detected_image = overlay_detections(
+                image_array,
+                st.session_state.detection_results['boulders'],
+                st.session_state.detection_results['landslides'],
+                st.session_state.detection_results.get('confirmed_landslides')
+            )
             
             analysis = st.session_state.detection_results['analysis']
+            hazard_count = analysis['boulder_count']
+            avg_conf = analysis['avg_boulder_confidence'] * 100
+            max_slope = st.session_state.detection_results['average_slope']
             
-            # Key Metrics
-            metric_cols = st.columns(4)
+            st.divider()
             
-            with metric_cols[0]:
-                st.markdown(f"""
-                <div class='metric-card'>
-                    <div style='color: #00ffff; opacity: 0.7; font-size: 0.9em;'>Boulder Count</div>
-                    <div style='color: #00ffff; font-size: 1.8em; font-weight: bold;'>{analysis['boulder_count']}</div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with metric_cols[1]:
-                st.markdown(f"""
-                <div class='metric-card'>
-                    <div style='color: #00ffff; opacity: 0.7; font-size: 0.9em;'>Max Diameter</div>
-                    <div style='color: #00ffff; font-size: 1.8em; font-weight: bold;'>{analysis['max_boulder_diameter_m']:.1f}m</div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with metric_cols[2]:
-                st.markdown(f"""
-                <div class='metric-card'>
-                    <div style='color: #00ffff; opacity: 0.7; font-size: 0.9em;'>Avg Confidence</div>
-                    <div style='color: #00ffff; font-size: 1.8em; font-weight: bold;'>{analysis['avg_boulder_confidence']:.2%}</div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with metric_cols[3]:
-                risk_color = "#ff00ff" if analysis['landslide_risk_percentage'] > 20 else "#00ffff"
-                st.markdown(f"""
-                <div class='metric-card'>
-                    <div style='color: {risk_color}; opacity: 0.7; font-size: 0.9em;'>Landslide Risk</div>
-                    <div style='color: {risk_color}; font-size: 1.8em; font-weight: bold;'>{analysis['landslide_risk_percentage']:.1f}%</div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            # Detailed Report Table
-            st.markdown("#### Detailed Metrics")
-            
-            report_data = {
-                "Metric": [
-                    "🪨 Boulder Count",
-                    "📏 Max Boulder Diameter",
-                    "📊 Avg Boulder Confidence",
-                    "🔴 Detected Landslide Pixels",
-                    "🟢 Confirmed Landslide Pixels",
-                    "⚠️ Landslide Risk %",
-                    "🏔️ Average Slope"
-                ],
-                "Value": [
-                    f"{analysis['boulder_count']}",
-                    f"{analysis['max_boulder_diameter_m']:.2f} m",
-                    f"{analysis['avg_boulder_confidence']:.2%}",
-                    f"{analysis['landslide_pixel_count']}",
-                    f"{analysis['confirmed_landslide_pixel_count']}",
-                    f"{analysis['landslide_risk_percentage']:.1f}%",
-                    f"{st.session_state.detection_results['average_slope']:.2f}°"
-                ]
-            }
-            
-            st.dataframe(report_data, use_container_width=True, hide_index=True)
-            
-            # Export Results
-            st.markdown("#### 💾 Export Options")
-            col1, col2, col3 = st.columns(3)
-            
+            col1, col2 = st.columns([2, 1])
+
             with col1:
-                # Convert image to bytes for download
-                img_pil = Image.fromarray(detected_image)
-                buf = BytesIO()
-                img_pil.save(buf, format="PNG")
-                btn = st.download_button(
-                    label="📥 Download Detection Image",
-                    data=buf.getvalue(),
-                    file_name="detection_result.png",
-                    mime="image/png",
-                    use_container_width=True
-                )
-            
+                img_col1, img_col2 = st.columns(2)
+                
+                with img_col1:
+                    st.image(image_array, caption="Original Image", use_container_width=True, channels="GRAY")
+                
+                with img_col2:
+                    st.image(detected_image, caption="AI Hazard Analysis", use_container_width=True)
+
             with col2:
-                st.markdown("<p style='text-align: center; color: #00ffff; opacity: 0.5;'>Report Export</p>", 
-                           unsafe_allow_html=True)
-            
-            with col3:
-                st.markdown("<p style='text-align: center; color: #00ffff; opacity: 0.5;'>Data Sharing</p>", 
-                           unsafe_allow_html=True)
+                st.subheader("📊 Mission Statistics")
+                st.metric("Total Hazards", f"{hazard_count}")
+                st.metric("Avg. Confidence", f"{avg_conf:.1f}%")
+                st.metric("Max Slope", f"{max_slope:.1f}°")
+                
+                if hazard_count > 5 or max_slope > 15:
+                    st.error("🛑 SITE STATUS: UNSAFE")
+                else:
+                    st.success("✅ SITE STATUS: SAFE")
 
 elif operating_mode == "Camera Input":
     st.markdown("<h3>📷 CAMERA INPUT (Not Yet Implemented)</h3>", unsafe_allow_html=True)
