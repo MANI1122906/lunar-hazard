@@ -73,8 +73,15 @@ No model files needed to run or demo this project.
 
 ## 🚀 Getting Started
 
-### Installation
-```bash
+## 🚀 Getting Started
+
+### Windows (One-Click Run - RECOMMENDED)
+For the fastest evaluation, simply double-click the included script:
+1. Extract the ZIP.
+2. Run `run_project.bat`.
+*This will automatically set up the environment and launch the dashboard.*
+
+### Manual Installation (All OS)
 # Clone the repo
 git clone https://github.com/MANI1122906/lunar-hazard.git
 cd lunar-hazard
@@ -86,13 +93,9 @@ source .venv/bin/activate    # Linux/Mac
 
 # Install dependencies
 pip install -r requirements.txt
-```
 
-### Run the App
-```bash
+# Run the App
 streamlit run app.py
-```
-
 ---
 
 ## 🌐 Accessing the App
